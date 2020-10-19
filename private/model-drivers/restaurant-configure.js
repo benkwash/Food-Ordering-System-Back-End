@@ -19,6 +19,11 @@ class RestaurantConfigure {
 
     //other functions
 
+    /**
+     * This method creates new restaurant configuration doc
+     *  @param {Object} newConfig
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     saveNewConfiguration(newConfig) {
 
         let that = this;
@@ -37,6 +42,11 @@ class RestaurantConfigure {
     }
 
 
+    /**
+     * Get restaurant configuration document
+     *  @param {String} resID
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     getConfigInfo(resID) {
 
         let that = this;
@@ -83,6 +93,12 @@ class RestaurantConfigure {
 
     // }
 
+    /**
+     * This method updates configuration information
+     *  @param {String} resID
+     *  @param {Object} update 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     updateConfigInfo(resID, update) {
 
         let that = this;
@@ -97,6 +113,14 @@ class RestaurantConfigure {
         }); //emd of promise
     }
 
+    /**
+     * Retrieve all restaurants within a given location
+     *  @param {String} region
+     *  @param {String} city 
+     *  @param {Number} pageNumber 
+     *  @param {String} option 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     getRestaurants(region, city, pageNumber, option) {
 
         let that = this;
@@ -161,7 +185,7 @@ class RestaurantConfigure {
                 $limit: queryLimit
             }, {
                 $skip: querySkip
-            }], function (error, res) {
+            }], function(error, res) {
                 if (error) {
                     reject(error)
                 } else {
@@ -196,7 +220,7 @@ class RestaurantConfigure {
                 $limit: queryLimit
             }, {
                 $skip: querySkip
-            }], function (error, res) {
+            }], function(error, res) {
                 if (error) {
                     reject(error)
                 } else {
@@ -231,7 +255,7 @@ class RestaurantConfigure {
                 $limit: queryLimit
             }, {
                 $skip: querySkip
-            }], function (error, res) {
+            }], function(error, res) {
                 if (error) {
                     reject(error)
                 } else {

@@ -21,20 +21,23 @@ class OrderOperations {
         this.restaurantID = restaurantID;
 
         this.cartDriver = new cart(connection);
-        this.resConfigDriver = null;
-        this.resInfoDriver = new resinfo(connection);
-        this.resMenuDriver = new resmenu(connection);
-        this.resConfigDriver = new resconfig(connection);
+        // this.resConfigDriver = null;
+        // this.resInfoDriver = new resinfo(connection);
+        // this.resMenuDriver = new resmenu(connection);
+        // this.resConfigDriver = new resconfig(connection);
         this.empInfoDriver = new empInfo(connection);
 
     }
 
-
-
     //other functions
 
+
+    /**
+     * get restaurant orders
+     * @param {} 
+     * @return {Promise} - Object or Boolean(false)
+     */
     getRestaurantOrders() {
-        let that = this;
 
         return this.cartDriver.getRestaurantOrders(this.restaurantID)
             .then(resOrders => {
@@ -42,24 +45,24 @@ class OrderOperations {
                     return []
                 } else {
                     resOrders.forEach((doc, index) => {
-                        //assign customer namee
+                        //get customer namee
                         doc['customerName'] = doc.customerInfo[0].fName + " " + doc.customerInfo[0].lName //naturally only doc should be here
                         delete doc.customerInfo; //delete customer info
 
-                        doc['orderID'] = doc._id.toString().substring(0, 10); //order id ==first 10 characters of mongoose obj id
-
-
+                        // doc['orderID'] = doc._id.toString().substring(0, 10); 
+                        //order id ==first 10 characters of mongoose obj id
                     });
-
-
-
                     return resOrders;
                 }
             })
     }
 
+    /**
+     * get filtered restaurant orders
+     * @param {String} orderOption -{filter..}
+     * @return {Promise} - Object
+     */
     getRestaurantOrdersFilter(orderOption) {
-        let that = this;
 
         return this.cartDriver.getRestaurantOrdersFiltered(this.restaurantID, orderOption)
             .then(resOrders => {
@@ -71,17 +74,20 @@ class OrderOperations {
                         doc['customerName'] = doc.customerInfo[0].fName + " " + doc.customerInfo[0].lName //naturally only doc should be here
                         delete doc.customerInfo; //delete customer info
 
-                        // doc['orderID'] = doc._id.toString().substring(0, 10); //order id ==first 10 characters of mongoose obj id
-
-
+                        // doc['orderID'] = doc._id.toString().substring(0, 10); 
+                        //order id ==first 10 characters of mongoose obj id
                     });
                     return resOrders;
                 }
             })
     }
 
+    /**
+     * get one order detail
+     * @param {String} cartID -(order object id)
+     * @return {Promise} - Object
+     */
     getOneOrderDetail(cartID) {
-        let that = this;
 
         return this.cartDriver.retrieveOneOrderDetail(cartID, this.restaurantID)
             .then(retrieved => {
@@ -96,9 +102,13 @@ class OrderOperations {
             })
     }
 
-    //getDeliveryRes
+    /**
+     * get all orders with delivery option
+     * @param {String} accountType
+     * @param {String} filter
+     * @return {Promise} - Object (restaurant orders)
+     */
     getRestaurantDeliveries(accountType, filter) {
-        let that = this;
         let query = ''
         if (accountType == "admin") query = "getDeliveryRes"
         else query = "getDeliveryResStaff"
@@ -112,25 +122,26 @@ class OrderOperations {
                         doc['customerName'] = doc.customerInfo[0].fName + " " + doc.customerInfo[0].lName //naturally only doc should be queried
                         delete doc.customerInfo; //delete customer info
 
-                        //grab assigned stadff name
+                        //grab assigned staff name
                         if (!_.isEmpty(doc.deliveryPersonInfo)) {
                             doc['deliveryPersonName'] = doc.deliveryPersonInfo[0].fName + " " + doc.deliveryPersonInfo[0].lName
                         }
                         delete doc.deliveryPersonInfo; //delete staff info
                         doc['orderID'] = doc._id.toString().substring(0, 10); //order id ==first 10 characters of mongoose obj id
                     });
-                    //
-
-
 
                     return resOrders;
                 }
             })
     }
 
+    /**
+     * process order
+     * @param {String} cartID -(order object ID)
+     * @return {Promise} - Booolean
+     */
     processOrder(cartID) {
 
-        let that = this;
         let update = {
             processing: true
         }
@@ -140,12 +151,17 @@ class OrderOperations {
                 if (!_.isEmpty(res)) {
                     success = true;
                 }
-
                 return success;
             })
     }
+
+    /**
+     * get all staff with delivery permissions
+     * will be assigned to an order raeady for delivery
+     * @param {}
+     * @return {Promise} - Object or Empty array
+     */
     getDeliveryStaff() {
-        let that = this;
 
         return this.empInfoDriver.getDeliveryStaff(this.restaurantID)
             .then(staff => {
@@ -155,12 +171,17 @@ class OrderOperations {
                     return staff;
                 }
             })
-
     }
 
 
+    /**
+     * assign staff to an order for delivery
+     * @param {String} cartID -(order object id)
+     * @param {String} staffid
+     * @param {String} accountType
+     * @return {Promise} - Object {success:true|false}
+     */
     assignDeliveryStaff(cartID, staffID, accountType) {
-        let that = this;
 
         let update = {
             deliveryPerson: {
@@ -179,6 +200,13 @@ class OrderOperations {
             })
     }
 
+    /**
+     * cancel order
+     * @param {String} cartID -(order doc object id)
+     * @param {String} by -(person cancelling order)
+     * @param {String} reason
+     * @return {Promise} - Object {success:true|false}
+     */
     cancelOrder(cartID, by, reason) {
         let update = {
             cancelled: {
@@ -196,9 +224,15 @@ class OrderOperations {
                     return { success: true }
                 }
             })
-
     }
 
+    /**
+     * update order delivery status
+     * @param {String} cartID -(object id)
+     * @param {Boolean} completed 
+     * @param {Date} time
+     * @return {Promise} - Object or Boolean(false)
+     */
     updateDeliveryStatus(cartID, completed, time) {
         let update = {
             completed: {
@@ -215,9 +249,7 @@ class OrderOperations {
                     return { success: true }
                 }
             })
-
     }
-
 
 
 }

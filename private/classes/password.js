@@ -1,7 +1,6 @@
 /*
  * This Class performs all password operations
  * Some operations include ( encrypting a password and comparing two passwords)
- * 30-07-2017
  */
 var ServerLogger = require("./ServerLogger");
 
@@ -21,8 +20,8 @@ class PasswordClass {
 
     /**
      * Set password fields (a plaintext pass and a hashedOne)
-     * @param {String} - originalPassword 
-     * @param {String} - hashedPassword(string/hashed)
+     * @param {String} originalPassword 
+     * @param {String} hashedPassword -(string/hashed)
      * @return {} - void
      */
     setPasswordFields(originalPassword, hashedPassword) {

@@ -39,7 +39,6 @@ class UserAccountSettingsSchemaDriver {
      * This method saves a user account information
      *  @param {Object} info - userInfo(object)
      *  @return {Promise} - promise(mongoose doc/error)
-     * 12-09-2018
      */
     insertUserAccountInfo(info) {
         let saveInfo = new this.userSchema(info);
@@ -110,7 +109,6 @@ class UserAccountSettingsSchemaDriver {
      *  for a document given a user name
      *  @param {String} username 
      *  @return {Promise} - promise(mongoose doc/error)
-     * 12-09-2018
      */
     checkUserName(username) {
             let that = this;
@@ -140,7 +138,6 @@ class UserAccountSettingsSchemaDriver {
      *  for a document given a user name
      *  @param {String} username 
      *  @return {Promise} - promise(mongoose doc/error)
-     * 12-09-2018
      */
     checkEmail(email) {
             let that = this;
@@ -165,6 +162,11 @@ class UserAccountSettingsSchemaDriver {
         } //end of method
 
 
+    /**
+     * This method queries customer info using userID
+     *  @param {String} userID 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     retrieveCustomerName(userID) {
         let that = this;
         let returned = { fName: 1 };
@@ -285,7 +287,6 @@ class UserAccountSettingsSchemaDriver {
      * @param {String} userID
      * @param {String} newPassword
      * @param {String} restaurantID
-     * 23-01-2019
      */
     updateUserPasswordInfo(userID, newPassword, restaurantID) {
         let that = this;
@@ -323,6 +324,11 @@ class UserAccountSettingsSchemaDriver {
     }
 
 
+    /**
+     * Create an account for a staff
+     *  @param {Object} info -employee information
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     createEmployeeAccount(info) {
         let empInfo = info;
         empInfo['userID'] = mongoose.Types.ObjectId();

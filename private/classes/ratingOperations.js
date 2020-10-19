@@ -5,12 +5,6 @@ const mongoose = require('mongoose');
 //model drivers
 const cart = require("../model-drivers/customer-cart");
 const resconfig = require("../model-drivers/restaurant-configure");
-const resinfo = require("../model-drivers/restaurant-Information");
-const resmenu = require("../model-drivers/restaurant-menu");
-
-const empInfo = require("../model-drivers/employee-information")
-
-
 
 
 class RatingOperations {
@@ -25,14 +19,18 @@ class RatingOperations {
     }
 
 
-    //dummy func
+    /**
+     * get restaurant ratings
+     * @param {}
+     * @return {Promise} - Object (ratings detail)
+     */
     getResRating() {
         let that = this;
 
         var ratingReturn = {
-            rating: 0,
-            outOf: 0,
-            breakdown: {
+            rating: 0, //rating
+            outOf: 0, //number of ratings
+            breakdown: { //breakdown. percentage of each star review
                 five: 0,
                 four: 0,
                 three: 0,
@@ -73,8 +71,12 @@ class RatingOperations {
 
 
 
+    /**
+     * get restaurant reviews
+     * @param {}
+     * @return {Promise} - Object (reviews)
+     */
     getReviews() {
-        let that = this;
 
         return this.cartDriver.getReviews(this.restaurantID)
             .then(returnedReviews => {
@@ -82,8 +84,12 @@ class RatingOperations {
             })
     }
 
+    /**
+     * send replies to reviews
+     * @param {String} reply
+     * @return {Promise} - Boolean
+     */
     sendReply(reply) {
-        let that = this;
 
         let _id = reply._id;
         delete reply._id;

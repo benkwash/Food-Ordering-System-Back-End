@@ -75,7 +75,6 @@ class RestaurantInfoSchemaDriver {
      * Save only restuarant-admin information 
      * @param {Object} info - adminInfo(object)
      * @return {Promise} - promise(array of objects,error)
-     * 12-09-2018
      */
     insertRestaurantInfo(info) {
         let saveInfo = new this.setRestuarantInfoModel(info);
@@ -96,7 +95,6 @@ class RestaurantInfoSchemaDriver {
      * @param {Object} returned - included,excluded fields
      * @param {String} restaurantID - 
      * @return {Promise} - promise(array of objects,error)
-     * 22-07-2018
      */
     getRestaurantInfo(restaurantID) {
         let that = this;

@@ -41,8 +41,6 @@ class AdminOperations {
      * @return {Promise}
      */
     saveStaffInfo(staffInfo) {
-
-        let that = this;
         let newStaff = staffInfo;
 
         newStaff["restaurantID"] = this.restaurantID;
@@ -61,16 +59,18 @@ class AdminOperations {
      */
     getStaffInformation(staffID) {
 
-        let that = this;
-
         return this.employeeInfoDriver.retrieveEmployeeInformation(staffID, this.restaurantID)
             .then((retrieved) => {
                 return retrieved;
             })
     }
 
+    /**
+     * get staff information
+     * @param {String} id -{staff information document id}
+     * @return {Promise} - Object
+     */
     retrieveEmployeeInfoWithDocID(id) {
-        let that = this;
 
         return this.employeeInfoDriver.retrieveEmployeeInfoWithDocID(id, this.restaurantID)
             .then((retrieved) => {
@@ -84,11 +84,9 @@ class AdminOperations {
      * @return {Promise}
      */
     getAllStaffInformation() {
-        let that = this;
 
         return this.employeeInfoDriver.retrieveAllEmployeeInformation(this.restaurantID)
             .then((returned) => {
-
                 return returned;
             })
     }
@@ -99,11 +97,9 @@ class AdminOperations {
      * @return {Promise}
      */
     updateStaffInformation(update) {
-        let that = this;
 
         return this.employeeInfoDriver.updateEmployeeInfo(update)
             .then((returned) => {
-
                 return returned;
             })
     }
@@ -215,6 +211,11 @@ class AdminOperations {
 
     }
 
+    /**
+     * get customer's orders
+     * @param {Object} -staff info {userID:staffID}
+     * @return {Promise} - Object {success:true|false}
+     */
     resetStaffPassword(staffinfo) {
         let password = func.generateRawPassword(); //generate random password for staff account
 
@@ -238,13 +239,12 @@ class AdminOperations {
 
     /**
      * create staff account
-     * @param {String} staffInfo {userID:idd}
+     * @param {Object} staffInfo {userID:idd}
      * @param {String} action "enable" or "disable" account
      * @return {Promise}
      */
     updateStaffAccount(staffinfo, action) {
         let that = this;
-
 
         let update = {
             userID: staffinfo.userID,

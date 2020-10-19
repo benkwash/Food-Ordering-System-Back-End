@@ -21,13 +21,16 @@ class EmployeeInfo {
 
     //other functions
 
-    saveEmployeeInfo(info) {
+    /**
+     * This method creates a new staff doc
+     *  @param {Object} staffInfo
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
+    saveEmployeeInfo(staffInfo) {
 
-        let that = this;
-        let newStaff = new this.employeeInfoModel(info);
+        let newStaff = new this.employeeInfoModel(staffInfo);
 
         return new Promise((resolve, reject) => {
-
             newStaff.save()
                 .then((savedInfo) => {
                     resolve(savedInfo);
@@ -38,6 +41,11 @@ class EmployeeInfo {
         }); //end of promise
     }
 
+    /**
+     * This method updates staff info
+     *  @param {Object} update
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     updateEmployeeInfo(update) {
         let that = this;
 
@@ -59,6 +67,11 @@ class EmployeeInfo {
 
     }
 
+    /**
+     * This method updates staff info using the staff's userid
+     *  @param {Object} update
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     updateEmployeeInfoWithUserID(update) {
         let that = this;
 
@@ -81,6 +94,12 @@ class EmployeeInfo {
     }
 
 
+    /**
+     * This method retrieves a restaurant staff info
+     *  @param {String} userID
+     *  @param {String} restaurantID 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     retrieveEmployeeInformation(userID, restaurantID) {
         let that = this;
 
@@ -100,7 +119,14 @@ class EmployeeInfo {
                 });
         });
     }
-    retrieveEmployeeInfoWithDocID(id,restaurantID){
+
+    /**
+     * This method gets staff information using the staff doc id
+     *  @param {String} id -mongo doc id
+     *  @param {String} restaurantID 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
+    retrieveEmployeeInfoWithDocID(id, restaurantID) {
         let that = this;
 
         return new Promise(function(resolve, reject) {
@@ -120,6 +146,11 @@ class EmployeeInfo {
         });
     }
 
+    /**
+     * This method gets all restaurant staff
+     *  @param {String} restaurantID 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     retrieveAllEmployeeInformation(restaurantID) {
         let that = this;
 
@@ -132,9 +163,14 @@ class EmployeeInfo {
                 }).catch((error) => {
                     reject(error);
                 })
-        }); //endd of promise
+        }); //end of promise
     }
 
+    /**
+     * This method retrieves all staff with delivery permission
+     *  @param {String} resID
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     getDeliveryStaff(resID) {
         let that = this;
 

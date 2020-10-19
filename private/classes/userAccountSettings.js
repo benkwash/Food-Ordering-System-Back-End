@@ -55,7 +55,6 @@ class UserAccountSettings {
      * Require school info model driver
      * @param {} - none
      * @return {} - none
-     * 04-09-2018
      */
     setrestaurantInfoDriver() {
         //only set driver once
@@ -206,7 +205,6 @@ class UserAccountSettings {
      * Promise returns a boolean when successful or an error on failure
      * @param {String} username - username:string
      * @return {Promise(success(boolean),error)} - (success(true|false),error())
-     * 08-08-2017
      */
     userNameExists(username) {
             let that = this;
@@ -302,7 +300,6 @@ class UserAccountSettings {
      * @param {Object} adminSchoolInfo - object{admin fName,mName,lName}
      * @param {Object} userAccountInfo - object{username,password,...}
      * @return {Promise} 
-     * 12-09-2018 
      */
     signNewUserUp(adminSchoolInfo, userAccountInfo) {
         let that = this;
@@ -960,7 +957,6 @@ class UserAccountSettings {
      * @param {String} userID - user whose password is to be changed
      * @param {string} newPassword - new password to be udpated
      * @return {Promise<{isSaved:boolean>}
-     * 23-01-2019
      */
     updateUserNewPassword(userID, newPassword) {
         this.setPasswordClass();
@@ -998,7 +994,6 @@ class UserAccountSettings {
      * @param {String} userID
      * @param {Object} userInformation
      * @return {Promise}
-     * 09-06-2019
      */
     // updateUserAccountInformation(userID,userInformation){
     //     //update a user's information

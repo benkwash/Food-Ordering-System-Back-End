@@ -8,7 +8,7 @@ const menuModel = require("../model-drivers/restaurant-menu");
 
 class MenuOperations {
 
-    constructor(connection, userID=null, resID=null) {
+    constructor(connection, userID = null, resID = null) {
         this.userID = userID;
         this.restaurantID = resID;
 
@@ -26,11 +26,16 @@ class MenuOperations {
 
     //other functions
 
+
+    /**
+     * add new menu
+     * @param {Object} menuData -{new menu info}
+     * @return {Promise} - Object or Boolean(false)
+     */
     saveMenu(menuData) {
-        let that = this;
 
         let menu = menuData;
-        menu['restaurantID'] = this.restaurantID
+        menu['restaurantID'] = this.restaurantID //add restaurant id to menu info
 
         return this.menuDriver.saveNewMenu(menu)
             .then((returned) => {
@@ -42,8 +47,13 @@ class MenuOperations {
             })
 
     }
+
+    /**
+     * retrieve all menu of a restaurant
+     * @param {}
+     * @return {Promise} - Object or Boolean(false)
+     */
     getAllMenu() {
-        let that = this;
 
         return this.menuDriver.retrieveAllMenu(this.restaurantID)
             .then((response) => {
@@ -52,13 +62,15 @@ class MenuOperations {
                 } else {
                     return false;
                 }
-
             })
     }
 
+    /**
+     * update restaurant menu
+     * @param {Object} menu -{menu information}
+     * @return {Promise} - Object or Boolean(false)
+     */
     updateMenu(menu) {
-
-        let that = this;
 
         return this.menuDriver.updateMenu(menu._id, menu)
             .then((returned) => {
@@ -67,16 +79,21 @@ class MenuOperations {
                 } else {
                     return false
                 }
-
             })
     }
 
+    /**
+     * delete restaurant menu
+     * @param {String} menuID
+     * @return {Promise} - Object {success:true|false}
+     */
     deleteMenu(menuID) {
 
-        let that = this;
         let update = {
             _id: menuID,
             isActive: false
+                //not really deleting..just hiding it from any new queries..
+                //for minnig purposes .abi you barb
         }
 
         return this.menuDriver.updateMenu(menuID, update)
@@ -86,10 +103,14 @@ class MenuOperations {
                 } else {
                     return { success: false }
                 }
-
             })
     }
 
+    /**
+     * get one menu details
+     * @param {String} menuID
+     * @return {Promise} - Object or Boolean(false)
+     */
     getOneMenu(menuID) {
         return this.menuDriver.retrieveOneMenu(menuID)
             .then(returned => {

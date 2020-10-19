@@ -32,10 +32,19 @@ class CustomerOperations {
     }
 
 
+    /**
+     * get all restaurants
+     * data to return when a customer searches for vendors within their location
+     * @param {String} region
+     * @param {String} city
+     * @param {Number} pageNumber
+     * @param {String} option -either delivery,pickup or table
+     * @return {Promise} - Object -mapped
+     */
     //params region &&city
     getRestaurants(region, city, pageNumber, option) {
-        let that = this;
 
+        //gotta clean up this code later
         return this.resConfigDriver.getRestaurants(region, city, pageNumber, option)
             .then((data) => {
                 if (!_.isNull(data) || !_.isEmpty(data)) {
@@ -74,16 +83,16 @@ class CustomerOperations {
             });
     }
 
+    /**
+     * get all menu of a specific restaurant
+     * @param {Sting} resID -restaurant ID
+     * @param {String} city -city queried by the user
+     * @return {Promise} - Object
+     */
     getAllRestaurantMenu(resID, city) {
         let that = this;
 
-        // tableReservation: { type: Boolean },
-        // totalTables: { type: Number }, //total number of reservable tables
-        // totalChairs: { type: Number }, //total number of reservable chairs
-        // maximumChairPerTable: { type: Number },
-        // costPerTable: { type: Number 
-
-
+        //data to return
         let dCost = null;
         let dCity = null;
         let menu = null;
@@ -99,11 +108,22 @@ class CustomerOperations {
         let pickup = false;
         let delivery = false;
 
+        //get res config info
         return this.resConfigDriver.getConfigInfo(resID)
             .then((returned) => {
                 if (_.isNull(returned) || _.isEmpty(returned)) {
                     return [];
                 } else {
+                    //this could be cleaned up if i used google geo services
+                    //aint paying for it obviously, cos this be school project and its damn expensive for me
+
+                    //algo..a restaurant has/can deliver to many cities
+                    //first city in the cities array is the actual location of the restaurant
+                    //user searches for restaurants within their location
+                    //algo matches city in the cities array and grabs delivery cost of delivery to that location
+                    //a restaurant can be in accra but delivers to kasoa.delivery might be free in accra but not to kasoa
+                    //where a user searches from will determine the location and delivery cost
+                    //get cities
                     let obj = returned.cities;
                     obj.forEach((x, index) => {
                             if (x.city == city) {
@@ -123,14 +143,17 @@ class CustomerOperations {
                     if (returned.delivery) delivery = true;
                     picture = returned.picture ? returned.picture : null;
                     restID = returned.restaurantID
+
+                    //retrieve menu of the restaurant
                     return that.resMenuDriver.retrieveAllMenu(resID)
                 }
             }).then((menus) => {
                 if (_.isNull(menus) || _.isEmpty(menus)) {
                     menu = [];
                 } else {
-                    menu = menus;
+                    menu = menus; //menu isnt empty
                 }
+                //get resaurant info...this will be cleaned up later in the query
                 return that.resInfoDriver.getRestaurantInfo(resID);
             }).then(resInformation => {
                 if (_.isNull(resInformation) || _.isEmpty(resInformation)) {
@@ -152,6 +175,13 @@ class CustomerOperations {
             });
     }
 
+    /**
+     * save order information
+     * new order
+     * @param {String} id -customer id
+     * @param {Object} orderInfo -order object
+     * @return {Promise} - Object {success:true|false}
+     */
     saveOrderCart(id, orderInfo) {
         let that = this;
 
@@ -166,6 +196,7 @@ class CustomerOperations {
                     //after order has been save...use the generated mongo doc id to calculate the order ID..
                     //basically the first ten characters of the mongo id
                     let orderID = funcOrderID.returnOrderID(savedInfo._id);
+                    //update order ID
                     return that.cartDriver.updateCartInfo(savedInfo._id, { orderID: orderID });
                 }
             }).then(response => {
@@ -177,24 +208,33 @@ class CustomerOperations {
             })
     }
 
+    /**
+     * get customer's orders
+     * @param {String} id -customer id
+     * @param {String} filter -all,pickup,table,delivery
+     * @return {Promise} - Object -orders
+     */
     getCustomerOrders(id, filter) {
-        let that = this;
 
+        //get orders
         return this.cartDriver.getCustomerOrders(id, filter)
             .then(orders => {
                 if (_.isNull(orders) || _.isEmpty(orders)) {
                     return []
                 } else {
+                    //loop through and determine/get status of the order
                     orders.forEach((doc, index) => {
                         let status = null;
                         let action = null
                         if (doc.cancelled.cancelled) {
                             status = 'cancelled'
                         } else if (doc.completed.completed && doc.customerConfirmation) {
+                            //if order has been completed
                             if (doc.mode == "delivery") status = 'delivered';
                             else if (doc.mode == "pickup") status = 'picked up';
                             else if (doc.mode == "table") status = 'completed';
                         } else if (doc.deliveryPerson.deliveryPerson && doc.processing && !doc.completed.completed) {
+                            //if order isnt completed and being assigned a delivery person
                             status = 'in transit'
                         } else if (doc.deliveryPerson.deliveryPerson == null && doc.processing && !doc.completed.completed) {
                             status = "processing"
@@ -223,36 +263,47 @@ class CustomerOperations {
                         delete orders[index].customerConfirmation;
                         delete orders[index].deliveryFee;
                     })
-                    return orders
+                    return orders //return order
                 }
             })
     }
 
+    /**
+     * get one order detail
+     * @param {String} order -object id
+     * @return {Promise} - Object or Boolean(false)
+     */
     getOrderDetail(cartID) {
-        let that = this;
-
         return this.cartDriver.retrieveOneOrderCustomer(cartID)
             .then(response => {
                 if (!_.isNull(response)) return response;
                 else return false
             })
     }
+
+    /**
+     * update an order info
+     * @param {String} order -object id
+     * @param {Object} update
+     * @return {Promise} - Object or Boolean(false)
+     */
     updateCustomerOrder(cartID, update) {
-        let that = this;
 
         let success = false
         return this.cartDriver.updateCartInfo(cartID, update)
             .then(res => {
                 if (!_.isNull(res) || !_.isEmpty(res)) success = true;
-
                 return success;
-
-
             })
     }
-    sendReply(reply, userID) {
-        let that = this;
 
+    /**
+     * reply to comments on a order review
+     * @param {String} reply
+     * @param {String} userID
+     * @return {Promise} - Object or Boolean(false)
+     */
+    sendReply(reply, userID) {
         let _id = reply._id;
         delete reply._id;
 
@@ -271,6 +322,12 @@ class CustomerOperations {
             })
     }
 
+    /**
+     * get customer's orders
+     * @param {String} order -object id
+     * @param {Object} update
+     * @return {Promise} - Object or Boolean(false)
+     */
     confirmOrder(cartID, update) {
         //algo
         //update order confirmation...might come with rating which is optional

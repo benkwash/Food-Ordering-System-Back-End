@@ -18,9 +18,13 @@ class RestaurantMenu {
     //other functions
 
 
+    /**
+     * Save new restaurant information
+     *  @param {Object} menuDoc
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     saveNewMenu(menuDoc) {
 
-        let that = this;
         let newMenu = new this.resMenuModel(menuDoc);
 
         return new Promise((resolve, reject) => {
@@ -35,6 +39,12 @@ class RestaurantMenu {
 
     }
 
+    /**
+     * Update a restaurant's menu information
+     *  @param {String} menuID
+     *  @param {Object} update 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     updateMenu(menuID, update) {
         let that = this;
 
@@ -55,6 +65,11 @@ class RestaurantMenu {
 
     }
 
+    /**
+     * Retrieve all menu of a particular restaurant
+     *  @param {String} restaurantID 
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     retrieveAllMenu(restaurantID) {
         let that = this;
 
@@ -71,6 +86,11 @@ class RestaurantMenu {
 
     }
 
+    /**
+     * Get details on one restaurant menu
+     *  @param {String} menuID
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     retrieveOneMenu(menuID) {
 
         let that = this;
@@ -85,6 +105,11 @@ class RestaurantMenu {
         }); //end of promise
     }
 
+    /**
+     * Delete menu info..not really delete. just hide it from future queries
+     *  @param {String} menuID
+     *  @return {Promise} - promise(mongoose doc/error)
+     */
     deleteMenu(menuID) {
 
         let that = this;

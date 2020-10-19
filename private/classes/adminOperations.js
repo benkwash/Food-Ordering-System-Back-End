@@ -36,7 +36,7 @@ class AdminOperations {
     getRestaurantInfo() {
         let that = this;
 
-        this.resInfoModelDriver(); //initalise driver
+        this.resInfoModelDriver(); //initalize driver
         let data = {
             name: null,
             picture: null
@@ -53,7 +53,11 @@ class AdminOperations {
             })
     }
 
-    //save new configuration information
+    /**
+     * save new configuration information
+     * @param {Object}  newConfigu -configuration info
+     * @return {Promise} - Object or Boolean(false)
+     */
     saveConfigInformation(newConfigu) {
         let that = this;
 
@@ -70,6 +74,11 @@ class AdminOperations {
 
     }
 
+    /**
+     * get restaurant configuration information
+     * @param {} 
+     * @return {Promise} - Object or Boolean(false)
+     */
     getConfigInformation() {
         let that = this;
 
@@ -84,17 +93,28 @@ class AdminOperations {
 
     }
 
-
+    /**
+     * update restaurant configuration information
+     * @param {Object} update
+     * @return {Promise} - Object or Boolean(false)
+     */
     updateConfigInformation(update) {
         let that = this;
-
         return this.configureDriver.updateConfigInfo(that.restaurantID, update)
             .then((update) => {
-                return update;
+                if (!_.isNull(update)) return update;
+                else return false
             });
 
     }
 
+    /**
+     * get restaurant order statistics for the current year
+     * get the sum for specific type of orders for the year
+     * this will be visualised in a chart in the frontend
+     * @param {}
+     * @return {Promise}
+     */
     getRestaurantStats() {
         let that = this;
         this.cartModelDriver(); //instantiate db
@@ -138,7 +158,8 @@ class AdminOperations {
     sortData(data) {
         let today = new Date;
         let month = today.getMonth() + 1; //numb...month starts at 0//mongobd's start at 1
-        let toReturn = []
+        //get months from the beginning of the year to current month
+        let toReturn = [] //an array of sum/revenue...position of data is the month
         for (let i = 0; i < month; i++) {
             toReturn[i] = 0;
         }

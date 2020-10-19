@@ -5,10 +5,6 @@ const mongoose = require('mongoose');
 //model drivers
 const cart = require("../model-drivers/customer-cart");
 const resconfig = require("../model-drivers/restaurant-configure");
-const resinfo = require("../model-drivers/restaurant-Information");
-const resmenu = require("../model-drivers/restaurant-menu");
-
-
 
 class RatingOperations {
 
@@ -22,6 +18,12 @@ class RatingOperations {
     }
 
 
+    /**
+     * get restaurant account details for a year..specifically from the beginning of the year
+     * to the current month
+     * @param {} 
+     * @return {Promise} - promise
+     */
 
     getAccountsDetails() {
         let that = this;
@@ -48,9 +50,15 @@ class RatingOperations {
 
     }
 
+    /**
+     * get restaurant account details for the last n days
+     * @param {Number} days - number of prev days
+     * @return {Promise} - promise
+     */
+
     getDetailsForNPastDays(days = 8) {
         let that = this;
-        var days = days; // Days you want to subtract
+        var days = days; // Days you want to subtract//go back in
         var date = new Date();
         var nDayDate = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
         // var day =last.getDate();
@@ -80,8 +88,6 @@ class RatingOperations {
                             // dataToReturn[doc._id].amount = doc.total;
                     })
                 }
-
-
                 return dataToReturn;
             })
     }
